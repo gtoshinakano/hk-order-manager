@@ -4,10 +4,16 @@ import Link from 'next/link'
 import Layout from '../components/layout'
 import {Grid, Segment, Header, Form, Button} from 'semantic-ui-react'
 import axios from 'axios'
+import { useRouter } from 'next/router'
 
-export default function Login() {
+export default function Login(props) {
 
   const [form, setForm] = React.useState({email: process.env.USERNAME, senha: process.env.PASSWORD})
+  const [loading, setLoading] = React.useState(false)
+  const [error, setError] = React.useState("")
+  const router = useRouter()
+
+  console.log(props);
 
   const get_url = process.env.SHEET_GET
 
@@ -16,7 +22,7 @@ export default function Login() {
   }
 
   const doLogin = (e) => {
-    console.log('enviando', form, get_url);
+    setLoading(true)
     axios.get(get_url, {
       params: {
         type:'login',
@@ -25,6 +31,11 @@ export default function Login() {
     })
     .then(res => {
       console.log(res);
+      setLoading(false)
+      if(res.data.success) {
+        props.setUser(res.data.success[0])
+        router.push('/')
+      }else setError(res.data.error)
     })
   }
 
@@ -70,7 +81,12 @@ export default function Login() {
                   onChange={formChange}
                 />
 
-                <Button color='teal' fluid size='large' disabled={form.email === "" || form.senha === ""}>
+                <Button
+                  color='teal'
+                  fluid size='large'
+                  disabled={form.email === "" || form.senha === "" || loading}
+                  loading={loading}
+                >
                   Login
                 </Button>
               </Segment>
