@@ -7,7 +7,7 @@ import axios from 'axios'
 
 export default function Login() {
 
-  const [form, setForm] = React.useState({email: "", senha: ""})
+  const [form, setForm] = React.useState({email: process.env.USERNAME, senha: process.env.PASSWORD})
 
   const get_url = process.env.SHEET_GET
 
