@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 
 export default function Login(props) {
 
-  const [form, setForm] = React.useState({email: process.env.USERNAME, senha: process.env.PASSWORD})
+  const [form, setForm] = React.useState({email: process.env.USEREMAIL, senha: process.env.PASSWORD})
   const [loading, setLoading] = React.useState(false)
   const [error, setError] = React.useState("")
   const router = useRouter()
