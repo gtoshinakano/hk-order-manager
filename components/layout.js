@@ -1,15 +1,16 @@
+import styles from './layout.module.css'
+
 function Layout({ children }) {
   return (
-    <div>
+    <div className={styles.content}>
       <main>{children}</main>
       <footer>
-        Link da Planilha:
+        <p>Link da Planilha:
         <a
           target="_blank"
           href="https://docs.google.com/spreadsheets/d/1-Z1rQUBstJeTAkH2FRvDysbylnoX-GbdYfZB3Bj26ZI/edit?usp=sharing">
           Hokkaido Matsuri 2020 - BD
-        </a>
-        <p>Desenvolvido por Toshi Nakano</p>
+        </a> - Desenvolvido por Toshi Nakano</p>
       </footer>
     </div>
   )
