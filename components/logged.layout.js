@@ -1,54 +1,53 @@
 import React from 'react'
 import styles from './logged.layout.module.css'
-import {Grid, Sidebar, Menu, Checkbox, Segment, Icon} from 'semantic-ui-react'
+import {Grid, Sidebar, Menu, Checkbox, Segment, Icon, Button, Ref, Sticky} from 'semantic-ui-react'
 
 function Layout({ children }) {
   const [visible, setVisible] = React.useState(false)
+  const divRef = React.useRef()
+
   return (
-    <div>
-      <main>
-        <Grid columns={1}>
-          <Grid.Column>
-            <Checkbox
-              checked={visible}
-              label={{ children: <code>visible</code> }}
-              onChange={(e, data) => setVisible(data.checked)}
-            />
-          </Grid.Column>
+    <Sidebar.Pushable style={{transform:"none"}}>
+      <Sidebar
+        as={Menu}
+        animation='scale down'
+        icon='labeled'
+        inverted
+        onHide={() => setVisible(false)}
+        vertical
+        visible={visible}
+        width='very thin'
+        compact
+        size="mini"
+      >
+        <Menu.Item as='a'>
+          <Icon name='calendar plus' />
+          Novo Pedido
+        </Menu.Item>
+        <Menu.Item as='a'>
+          <Icon name='tasks' />
+          Gerenciar
+        </Menu.Item>
+      </Sidebar>
+      <Sidebar.Pusher>
+        <Ref innerRef={divRef}>
+          <div className={styles.content}>
 
-          <Grid.Column>
-            <Sidebar.Pushable as={Segment}>
-              <Sidebar
-                as={Menu}
-                animation='overlay'
-                icon='labeled'
-                inverted
-                onHide={() => setVisible(false)}
-                vertical
-                visible={visible}
-                width='thin'
-              >
-                <Menu.Item as='a'>
-                  <Icon name='home' />
-                  Home
-                </Menu.Item>
-                <Menu.Item as='a'>
-                  <Icon name='gamepad' />
-                  Games
-                </Menu.Item>
-                <Menu.Item as='a'>
-                  <Icon name='camera' />
-                  Channels
-                </Menu.Item>
-              </Sidebar>
+              {children}
 
-              <Sidebar.Pusher dimmed={visible}>
-                {children}
-              </Sidebar.Pusher>
-            </Sidebar.Pushable>
-          </Grid.Column>
-        </Grid>
-      </main>
+            <Sticky context={divRef}>
+              <div className={styles["fab-button"]}>
+                <Button
+                  circular
+                  color="orange"
+                  icon="list alternate"
+                  onClick={() => setVisible(true)}
+                />
+              </div>
+            </Sticky>
+          </div>
+        </Ref>
+      </Sidebar.Pusher>
       <footer>
         Link da Planilha:
         <a
@@ -57,7 +56,7 @@ function Layout({ children }) {
           Hokkaido Matsuri 2020 - BD
         </a> - Desenvolvido por Toshi Nakano
       </footer>
-    </div>
+    </Sidebar.Pushable>
   )
 }
 

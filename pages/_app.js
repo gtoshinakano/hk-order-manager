@@ -1,4 +1,5 @@
 import 'semantic-ui-css/semantic.min.css'
+import '../statics/styles.css'
 import React from 'react'
 import { useRouter } from 'next/router'
 

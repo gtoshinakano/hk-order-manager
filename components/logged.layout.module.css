@@ -1,0 +1,9 @@
+.content{
+  min-height: 95vh;
+}
+
+.fab-button{
+  position: fixed;
+  top:10px;
+  left: 15px;
+}
