@@ -30,11 +30,10 @@ export default function Login(props) {
       }
     })
     .then(res => {
-      console.log(res);
       setLoading(false)
       if(res.data.success) {
         props.setUser(res.data.success[0])
-        router.push('/')
+        router.push('/signed/main')
       }else setError(res.data.error)
     })
   }
