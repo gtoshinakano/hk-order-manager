@@ -18,7 +18,6 @@ export default function Main(props) {
   })
   const [hasPeriod, setHasPeriod] = React.useState(false)
 
-
   const formChange = (e,{name, value}) => setForm({...form, [name] : value})
   const periodChange = (e, {value}) => setForm({...form, periodo : value});
 
@@ -31,7 +30,22 @@ export default function Main(props) {
     }).then(res => console.log(res))
   }
 
-  console.log(props.config);
+  const addToCart = (key, price) => {
+    const qtd = form[key] || 0
+    setForm({
+      ...form,
+      [key]: qtd + 1,
+      valor: form.valor + price
+    })
+  }
+
+  const removeFromCart = (key, price) => {
+    setForm({
+      ...form,
+      [key]: form[key] -1,
+      valor: form.valor - price
+    })
+  }
 
   const renderProducts = (products) => {
     return (
@@ -48,19 +62,29 @@ export default function Main(props) {
                     floated="right"
                     label={{basic:true, content:"R$", color:"green"}}
                     labelPosition="left"
-                    content={product.price.toFixed(2)}
+                    content={(product.price * (form[product.key] || 0)).toFixed(2)}
                     color="green"
                   />
                   <Button.Group floated="right" size='medium'>
-                    <Button color="blue" icon="minus"/>
-                    <Button.Or text="0" />
-                    <Button color="blue" icon="plus"/>
+                    <Button
+                      color="blue"
+                      icon="minus"
+                      disabled={!form[product.key] || form[product.key] === 0}
+                      onClick={() => removeFromCart(product.key, product.price)}
+                    />
+                    <Button.Or text={form[product.key] || 0} />
+                    <Button color="blue" icon="plus" onClick={() => addToCart(product.key, product.price)}/>
                   </Button.Group>
                 </Item.Description>
               </Item.Content>
             </Item>
           )}
         )}
+        <Item>
+          <Item.Content>
+            <Item.Header><h2>Total R$ {form.valor.toFixed(2)}</h2></Item.Header>
+          </Item.Content>
+        </Item>
       </Item.Group>
     )
   }

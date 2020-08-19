@@ -7,7 +7,8 @@ function Layout({children}) {
   const divRef = React.useRef()
 
   return (
-    <Sidebar.Pushable style={{transform:"none"}}>
+    <Sidebar.Pushable>
+    {/*<Sidebar.Pushable style={{transform:"none"}}>*/}
       <Sidebar
         as={Menu}
         animation='scale down'
