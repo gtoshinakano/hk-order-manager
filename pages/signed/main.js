@@ -18,7 +18,7 @@ export default function Main(props) {
   const [loading, setLoading] = React.useState(false)
 
   const formChange = (e,{name, value}) => setForm({...form, [name] : value})
-  const periodChange = (e, {value}) => setForm({...form, periodo : value});
+  const periodChange = (e, {value}) => setForm({...form, periodo : value}); //TODO Remove period if hasPeriod false
 
   const submit = () => {
     setLoading(true)
