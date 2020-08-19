@@ -15,18 +15,31 @@ export default function Main(props) {
     valor: 0,
   })
   const [hasPeriod, setHasPeriod] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
 
   const formChange = (e,{name, value}) => setForm({...form, [name] : value})
   const periodChange = (e, {value}) => setForm({...form, periodo : value});
 
   const submit = () => {
+    setLoading(true)
     axios.get(get_url, {
       params:{
         type:"add-new-order",
         token: props.hash,
         dados: form
       },
-    }).then(res => console.log(res))
+    }).then(res => {
+      console.log(res);
+      setLoading(false)
+      setForm({
+        status: "Contato Inicial",
+        nome: "",
+        celular: "",
+        pagto: "Pendente",
+        valor: 0,
+      })
+      // TODO handle more stuffs here
+    })
   }
 
   const addToCart = (key, price) => {
@@ -113,7 +126,7 @@ export default function Main(props) {
           <title>Sistema de Eventos Takeout Hokkaido</title>
         </Head>
         <Header as='h1' className="page-header">Adicionar novo pedido</Header>
-        <Segment className="marged" inverted color="black">
+        <Segment className="marged" inverted color="black" disabled={loading} loading={loading}>
           <Form inverted size="big" onSubmit={submit}>
             <Form.Group widths='equal'>
               <Form.Input
@@ -202,7 +215,16 @@ export default function Main(props) {
                 value={form.comprovante}
               />
             </Form.Group>
-            <Form.Field fluid control={Button} type='submit' size="big" color="blue">Submit</Form.Field>
+            <Form.Field
+              fluid
+              control={Button}
+              type='submit'
+              size="big"
+              color="blue"
+              disabled={form.nome === "" || form.celular=== "" || form.valor === 0 || loading}
+            >
+              Submit
+            </Form.Field>
           </Form>
         </Segment>
       </Layout>
