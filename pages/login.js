@@ -5,7 +5,6 @@ import Layout from '../components/layout'
 import {Grid, Segment, Header, Form, Button} from 'semantic-ui-react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
-import {hash} from '../utils/utils'
 
 export default function Login(props) {
 
@@ -13,8 +12,6 @@ export default function Login(props) {
   const [loading, setLoading] = React.useState(false)
   const [error, setError] = React.useState("")
   const router = useRouter()
-
-  console.log(hash("Toshi"));
 
   const get_url = process.env.SHEET_GET
 
@@ -31,12 +28,20 @@ export default function Login(props) {
       }
     })
     .then(res => {
-      setLoading(false)
       if(res.data.success) {
-        console.log(res.data);
-        props.setUser(res.data.success[0])
-        props.setHash(res.data.token)
-        router.push('/signed/main')
+        axios.get(get_url, {
+          params:{
+            type:"handshake",
+            token: res.data.token
+          },
+        }).then(hs => {
+          setLoading(false)
+          props.setUser(res.data.success[0])
+          props.setHash(res.data.token)
+          props.setHandshake(hs.data)
+          router.push('/signed/main')
+        })
+
       }else setError(res.data.error)
     })
   }
