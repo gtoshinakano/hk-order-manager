@@ -18,6 +18,7 @@ export default function Main(props) {
   })
   const [hasPeriod, setHasPeriod] = React.useState(false)
 
+
   const formChange = (e,{name, value}) => setForm({...form, [name] : value})
   const periodChange = (e, {value}) => setForm({...form, periodo : value});
 
@@ -56,9 +57,6 @@ export default function Main(props) {
                     <Button color="blue" icon="plus"/>
                   </Button.Group>
                 </Item.Description>
-                <Item.Extra>
-
-                </Item.Extra>
               </Item.Content>
             </Item>
           )}
@@ -77,6 +75,7 @@ export default function Main(props) {
       inStock: i[2],
       image: i[7]
     }})
+    const pagOpts = [{key:"pendente", value:"Pendente", text  :"Pendente"},{key:"confirmado", value:"Confirmado", text  :"Confirmado"},{key:"dinheiro", value:"Dinheiro no Dia", text :"Dinheiro no Dia"}]
     return (
       <Layout>
         <Head>
@@ -152,6 +151,24 @@ export default function Main(props) {
                 onChange={periodChange}
                 name='periodo'
                 disabled={!hasPeriod}
+              />
+            </Form.Group>
+            <Form.Group grouped>
+              <Form.Field
+                control={Select}
+                label='Status do Pagamento'
+                options={pagOpts}
+                placeholder='Pagamento'
+                onChange={formChange}
+                value={form.pagto}
+                name="pagto"
+              />
+              <Form.Field
+                label="Comprovante"
+                control={Form.Input}
+                disabled={form.pagto !== "Confirmado"}
+                name="comprovante"
+                value={form.comprovante}
               />
             </Form.Group>
             <Button type='submit'>Submit</Button>
