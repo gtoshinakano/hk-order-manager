@@ -13,19 +13,18 @@ export default function Main(props) {
     celular: "",
     pagto: "Pendente",
     valor: 0,
-    num: 0,
-    periodo: 0,
   })
   const [hasPeriod, setHasPeriod] = React.useState(false)
 
   const formChange = (e,{name, value}) => setForm({...form, [name] : value})
   const periodChange = (e, {value}) => setForm({...form, periodo : value});
 
-  const test = () => {
+  const submit = () => {
     axios.get(get_url, {
       params:{
-        type:"handshake",
-        token: props.hash
+        type:"add-new-order",
+        token: props.hash,
+        dados: form
       },
     }).then(res => console.log(res))
   }
@@ -64,6 +63,8 @@ export default function Main(props) {
                     labelPosition="left"
                     content={(product.price * (form[product.key] || 0)).toFixed(2)}
                     color="green"
+                    type="button"
+
                   />
                   <Button.Group floated="right" size='medium'>
                     <Button
@@ -71,9 +72,15 @@ export default function Main(props) {
                       icon="minus"
                       disabled={!form[product.key] || form[product.key] === 0}
                       onClick={() => removeFromCart(product.key, product.price)}
+                      type="button"
                     />
                     <Button.Or text={form[product.key] || 0} />
-                    <Button color="blue" icon="plus" onClick={() => addToCart(product.key, product.price)}/>
+                    <Button
+                      color="blue"
+                      icon="plus"
+                      onClick={() => addToCart(product.key, product.price)}
+                      type="button"
+                    />
                   </Button.Group>
                 </Item.Description>
               </Item.Content>
@@ -107,7 +114,7 @@ export default function Main(props) {
         </Head>
         <Header as='h1' className="page-header">Adicionar novo pedido</Header>
         <Segment className="marged" inverted color="black">
-          <Form inverted size="big">
+          <Form inverted size="big" onSubmit={submit}>
             <Form.Group widths='equal'>
               <Form.Input
                 fluid
@@ -195,10 +202,9 @@ export default function Main(props) {
                 value={form.comprovante}
               />
             </Form.Group>
-            <Button type='submit'>Submit</Button>
+            <Form.Field fluid control={Button} type='submit' size="big" color="blue">Submit</Form.Field>
           </Form>
         </Segment>
-        <Button onClick={test}>handshake</Button>
       </Layout>
     )
   }
