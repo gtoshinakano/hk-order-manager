@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 export default function MyApp({ Component, pageProps }) {
   const [user, setUser] = React.useState("")
   const [redirected, setRedir] = React.useState(false)
+  const [hash, setHash] = React.useState()
   const router = useRouter()
 
   React.useEffect(() => {
@@ -15,7 +16,7 @@ export default function MyApp({ Component, pageProps }) {
     }
   },[user])
 
-  if(user === "") return <Component {...pageProps} setUser={setUser} />
-  return <Component {...pageProps} user={user} />
-
+  if(user === "") return <Component {...pageProps} setUser={setUser} setHash={setHash} />
+  return <Component {...pageProps} user={user} hash={hash} />
+ß
 }
