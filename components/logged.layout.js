@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './logged.layout.module.css'
 import {Grid, Sidebar, Menu, Checkbox, Segment, Icon, Button, Ref, Sticky} from 'semantic-ui-react'
 
-function Layout({ children }) {
+function Layout({children}) {
   const [visible, setVisible] = React.useState(false)
   const divRef = React.useRef()
 

@@ -1,4 +1,7 @@
 h1.ui.header.page-header{
   margin: 8px 60px;
-  color: pink;
+}
+
+.ui.segment.marged{
+  margin:10px;
 }
