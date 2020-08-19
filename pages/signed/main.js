@@ -1,7 +1,7 @@
 import React from 'react'
 import Head from 'next/head'
 import Layout from '../../components/logged.layout'
-import {Header, Button, Segment, Form, Radio, Select, Item, Input} from 'semantic-ui-react'
+import {Header, Button, Segment, Form, Radio, Select, Item, Input, Label} from 'semantic-ui-react'
 import axios from 'axios'
 
 export default function Main(props) {
@@ -34,29 +34,30 @@ export default function Main(props) {
 
   const renderProducts = (products) => {
     return (
-      <Item.Group relaxed>
+      <Item.Group relaxed divided>
         {products.map(product => {
           return(
             <Item key={product.key}>
-              <Item.Image size='small' src={product.image} />
+              <Item.Image size='mini' src={product.image} />
 
               <Item.Content verticalAlign='middle'>
                 <Item.Header>{product.name} - R$ {product.price.toFixed(2)}</Item.Header>
-                <Item.Meta>
-                  Alterar valor para esta venda{" "}
-                  <Input
-                    value={product.price}
-                    label={{ basic: true, content: 'R$' }}
-                    type="number"
-                    step="0.1"
+                <Item.Description>
+                  <Button
+                    floated="right"
+                    label={{basic:true, content:"R$", color:"green"}}
+                    labelPosition="left"
+                    content={product.price.toFixed(2)}
+                    color="green"
                   />
-                </Item.Meta>
-                <Item.Extra>
-                  <Button.Group size='medium'>
+                  <Button.Group floated="right" size='medium'>
                     <Button color="blue" icon="minus"/>
                     <Button.Or text="0" />
                     <Button color="blue" icon="plus"/>
                   </Button.Group>
+                </Item.Description>
+                <Item.Extra>
+
                 </Item.Extra>
               </Item.Content>
             </Item>
@@ -102,7 +103,10 @@ export default function Main(props) {
                 onChange={formChange}
               />
             </Form.Group>
-            <Segment>{renderProducts(products)}</Segment>
+            <Segment>
+              <Header icon="cart" content="Itens do pedido"/>
+              {renderProducts(products)}
+              </Segment>
             <Form.Group grouped>
               <Form.Field
                 control={Select}
