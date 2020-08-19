@@ -8,7 +8,7 @@ export default function Main(props) {
 
   const get_url = process.env.SHEET_GET
   const [form, setForm] = React.useState({
-    status: "",
+    status: "Contato Inicial",
     nome: "",
     celular: "",
     nishin: 0,
@@ -20,7 +20,7 @@ export default function Main(props) {
   })
   const [hasPeriod, setHasPeriod] = React.useState(false)
 
-  const formChange = (e) => setForm({...form, [e.target.name] : e.target.value})
+  const formChange = (e,{name, value}) => setForm({...form, [name] : value})
   const periodChange = (e, {value}) => setForm({...form, periodo : value});
 
   const test = () => {
@@ -46,7 +46,7 @@ export default function Main(props) {
           <title>Sistema de Eventos Takeout Hokkaido</title>
         </Head>
         <Header as='h1' className="page-header">Adicionar novo pedido</Header>
-        <Segment className="marged" inverted color="grey">
+        <Segment className="marged" inverted color="black">
           <Form inverted size="big">
             <Form.Group widths='equal'>
               <Form.Input
@@ -71,8 +71,10 @@ export default function Main(props) {
                 control={Select}
                 label='Status do Pedido'
                 options={statusOpt}
-                placeholder='Gender'
-
+                placeholder='Status'
+                onChange={formChange}
+                value={form.status}
+                name="status"
               />
             </Form.Group>
             <Form.Group grouped>
