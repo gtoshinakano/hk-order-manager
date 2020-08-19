@@ -1,7 +1,7 @@
 import React from 'react'
 import Head from 'next/head'
 import Layout from '../../components/logged.layout'
-import {Header, Button, Segment, Form, Radio, Select} from 'semantic-ui-react'
+import {Header, Button, Segment, Form, Radio, Select, Item, Input} from 'semantic-ui-react'
 import axios from 'axios'
 
 export default function Main(props) {
@@ -11,8 +11,6 @@ export default function Main(props) {
     status: "Contato Inicial",
     nome: "",
     celular: "",
-    nishin: 0,
-    ika: 0,
     pagto: "Pendente",
     valor: 0,
     num: 0,
@@ -29,17 +27,55 @@ export default function Main(props) {
         type:"handshake",
         token: props.hash
       },
-
-
     }).then(res => console.log(res))
-
   }
 
   console.log(props.config);
 
+  const renderProducts = (products) => {
+    return (
+      <Item.Group relaxed>
+        {products.map(product => {
+          return(
+            <Item key={product.key}>
+              <Item.Image size='small' src={product.image} />
+
+              <Item.Content verticalAlign='middle'>
+                <Item.Header>{product.name} - R$ {product.price.toFixed(2)}</Item.Header>
+                <Item.Meta>
+                  Alterar valor para esta venda{" "}
+                  <Input
+                    value={product.price}
+                    label={{ basic: true, content: 'R$' }}
+                    type="number"
+                    step="0.1"
+                  />
+                </Item.Meta>
+                <Item.Extra>
+                  <Button.Group size='medium'>
+                    <Button color="blue" icon="minus"/>
+                    <Button.Or text="0" />
+                    <Button color="blue" icon="plus"/>
+                  </Button.Group>
+                </Item.Extra>
+              </Item.Content>
+            </Item>
+          )}
+        )}
+      </Item.Group>
+    )
+  }
+
   if(!props.user) return <p>Redirecionando...</p>
   else{
     const statusOpt = props.config.status.map(i => {return {key:i[0],text:i[0], value:i[0]}})
+    const products = props.config.estoque.map(i => {return {
+      key: i[0].toLowerCase(),
+      name: i[0],
+      price: i[4],
+      inStock: i[2],
+      image: i[7]
+    }})
     return (
       <Layout>
         <Head>
@@ -66,6 +102,7 @@ export default function Main(props) {
                 onChange={formChange}
               />
             </Form.Group>
+            <Segment>{renderProducts(products)}</Segment>
             <Form.Group grouped>
               <Form.Field
                 control={Select}
