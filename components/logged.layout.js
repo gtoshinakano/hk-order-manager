@@ -1,10 +1,14 @@
 import React from 'react'
 import styles from './logged.layout.module.css'
 import {Grid, Sidebar, Menu, Checkbox, Segment, Icon, Button, Ref, Sticky} from 'semantic-ui-react'
+import { useRouter } from 'next/router'
 
 function Layout({children}) {
   const [visible, setVisible] = React.useState(false)
   const divRef = React.useRef()
+  const router = useRouter()
+
+  const goTo = (e, {name}) => router.push(name)
 
   return (
     <Sidebar.Pushable>
@@ -21,13 +25,13 @@ function Layout({children}) {
         compact
         size="mini"
       >
-        <Menu.Item as='a'>
+        <Menu.Item as={Button} name="/signed/orderlist" onClick={goTo}>
+          <Icon name='tasks' />
+          Terminal de<br />Entrega
+        </Menu.Item>
+        <Menu.Item as={Button} name="/signed/main" onClick={goTo}>
           <Icon name='calendar plus' />
           Novo Pedido
-        </Menu.Item>
-        <Menu.Item as='a'>
-          <Icon name='tasks' />
-          Gerenciar
         </Menu.Item>
       </Sidebar>
       <Sidebar.Pusher>

@@ -39,7 +39,7 @@ export default function Login(props) {
           props.setUser(res.data.success[0])
           props.setHash(res.data.token)
           props.setHandshake(hs.data)
-          router.push('/signed/main') //TODO HANDLE ERROR 
+          router.push('/signed/orderlist') //TODO HANDLE ERROR 
         })
 
       }else setError(res.data.error)
