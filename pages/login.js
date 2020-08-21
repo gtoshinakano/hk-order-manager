@@ -2,7 +2,7 @@ import Head from 'next/head'
 import React from 'react'
 import Link from 'next/link'
 import Layout from '../components/layout'
-import {Grid, Segment, Header, Form, Button} from 'semantic-ui-react'
+import {Grid, Segment, Header, Form, Button, Message} from 'semantic-ui-react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 
@@ -10,7 +10,7 @@ export default function Login(props) {
 
   const [form, setForm] = React.useState({email: process.env.USEREMAIL, senha: process.env.PASSWORD})
   const [loading, setLoading] = React.useState(false)
-  const [error, setError] = React.useState("")
+  const [message, setMessage] = React.useState({type: "", msg: ""})
   const router = useRouter()
 
   const get_url = process.env.SHEET_GET
@@ -29,6 +29,7 @@ export default function Login(props) {
     })
     .then(res => {
       if(res.data.success) {
+        setMessage({type:"success", msg: "Login efetuado com sucesso! Aguarde enquanto preparamos o sistema.."})
         axios.get(get_url, {
           params:{
             type:"handshake",
@@ -39,10 +40,13 @@ export default function Login(props) {
           props.setUser(res.data.success[0])
           props.setHash(res.data.token)
           props.setHandshake(hs.data)
-          router.push('/signed/orderlist') //TODO HANDLE ERROR 
+          router.push('/signed/orderlist') //TODO HANDLE ERROR
         })
 
-      }else setError(res.data.error)
+      }else{
+        setMessage({type:"error", msg:"ERRO: Usuário e/ou senha incorretos"})
+        setLoading(false)
+      }
     })
   }
 
@@ -66,8 +70,16 @@ export default function Login(props) {
             <Header as='h2' color='teal' textAlign='center'>
               Log-in no Sistema
             </Header>
-            <Form size='large' onSubmit={doLogin}>
-              <Segment stacked>
+            <Form size='large' onSubmit={doLogin} success={message.type === "success"}
+            error={message.type === "error"}>
+              <Segment stacked loading={loading}>
+                <Message
+                  header={message.msg}
+                  success={message.type === "success"}
+                  error={message.type === "error"}
+                  hidden={message.type === ""}
+                  visible={message.type !== ""}
+                />
                 <Form.Input
                   fluid
                   icon='user'
@@ -92,7 +104,6 @@ export default function Login(props) {
                   color='teal'
                   fluid size='large'
                   disabled={form.email === "" || form.senha === "" || loading}
-                  loading={loading}
                 >
                   Login
                 </Button>
