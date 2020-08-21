@@ -21,6 +21,7 @@ export default function Login(props) {
 
   const doLogin = (e) => {
     setLoading(true)
+    setMessage({type: "info", msg: "Enviando dados.."})
     axios.get(get_url, {
       params: {
         type:'login',
@@ -29,7 +30,7 @@ export default function Login(props) {
     })
     .then(res => {
       if(res.data.success) {
-        setMessage({type:"success", msg: "Login efetuado com sucesso! Aguarde enquanto preparamos o sistema.."})
+        setMessage({type:"success", msg: "Login efetuado com sucesso! Preparando o sistema.."})
         axios.get(get_url, {
           params:{
             type:"handshake",
@@ -71,35 +72,39 @@ export default function Login(props) {
               Log-in no Sistema
             </Header>
             <Form size='large' onSubmit={doLogin} success={message.type === "success"}
-            error={message.type === "error"}>
+            error={message.type === "error"} >
               <Segment stacked loading={loading}>
                 <Message
                   header={message.msg}
                   success={message.type === "success"}
                   error={message.type === "error"}
+                  info={message.type === "info"}
                   hidden={message.type === ""}
                   visible={message.type !== ""}
                 />
-                <Form.Input
-                  fluid
-                  icon='user'
-                  iconPosition='left'
-                  placeholder='Endereço de E-mail'
-                  value={form.email}
-                  onChange={formChange}
-                  name="email"
-                />
-                <Form.Input
-                  fluid
-                  icon='lock'
-                  iconPosition='left'
-                  placeholder='Senha'
-                  type='password'
-                  value={form.senha}
-                  name="senha"
-                  onChange={formChange}
-                />
+                {!loading &&
+                <Form.Group grouped>
+                  <Form.Input
+                    fluid
+                    icon='user'
+                    iconPosition='left'
+                    placeholder='Endereço de E-mail'
+                    value={form.email}
+                    onChange={formChange}
+                    name="email"
+                  />
 
+                  <Form.Input
+                    fluid
+                    icon='lock'
+                    iconPosition='left'
+                    placeholder='Senha'
+                    type='password'
+                    value={form.senha}
+                    name="senha"
+                    onChange={formChange}
+                  />
+                </Form.Group>}
                 <Button
                   color='teal'
                   fluid size='large'
