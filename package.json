@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "firebase": "^7.19.0",
     "moment": "^2.27.0",
     "next": "9.3.5",
     "react": "16.13.1",

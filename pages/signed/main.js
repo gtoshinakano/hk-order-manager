@@ -65,7 +65,7 @@ export default function Main(props) {
         {products.map(product => {
           return(
             <Item key={product.key}>
-              <Item.Image size='mini' src={product.image} />
+              <Item.Image size='small' src={product.image} />
 
               <Item.Content verticalAlign='middle'>
                 <Item.Header>{product.name} - R$ {product.price.toFixed(2)}</Item.Header>
