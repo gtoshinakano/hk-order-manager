@@ -42,6 +42,9 @@ export default function Login(props) {
           props.setHash(res.data.token)
           props.setHandshake(hs.data)
           router.push('/signed/orderlist') //TODO HANDLE ERROR
+        }).catch(err => {
+          setLoading(false)
+          setMessage({type:"error", msg: JSON.stringify(err)})
         })
 
       }else{
