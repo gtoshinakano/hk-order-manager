@@ -1,8 +1,9 @@
 import React from 'react'
 import Layout from '../../components/logged.layout'
 import Head from 'next/head'
-import {Header, Segment, Table, Label, List, Confirm, Button} from 'semantic-ui-react'
+import {Header, Segment, Table, Label, List, Confirm, Button, Message} from 'semantic-ui-react'
 import firebase from '../../utils/firebase'
+import axios from 'axios'
 
 const OrderList = (props) => {
 
@@ -11,37 +12,50 @@ const OrderList = (props) => {
   const [online, setOnline] = React.useState(false)
   const [open, setOpen] = React.useState(false)
   const [selected, setSelected] = React.useState()
+  const [alert, setAlert] = React.useState("")
+
   React.useEffect(() => {
     if(props.config)
       firebase.database().ref('delivery_status').on('value', (snap) => {
         setLoading(false)
-        console.log(snap.val());
+        if(snap.val()) setStatuses(Object.keys(snap.val()));
       })
-  }, [props.config])
+  }, [])
 
   React.useEffect(() => {
     if(props.config)
       firebase.database().ref(".info/connected").on("value", sn => setOnline(sn.val()));
   },[props.config])
 
-  console.log(props.config);
-
   const openConfirm = (selected) => {
     if(online){
+      setAlert("")
       setSelected(selected)
       setOpen(true)
     }
   }
   const closeConfirm = () => setOpen(false)
-
+  const get_url = process.env.SHEET_GET
   const deliverOrder = () => {
-    console.log("entregando", selected[0])
-
+    setLoading(true)
+    axios.get(get_url, {
+      params:{
+        type:"deliver-order",
+        token: props.hash,
+        pedido: selected[1],
+        terminal: props.user
+      },
+    }).then(res => {
+      firebase.database().ref('delivery_status/'+selected[1]).set({time: firebase.database.ServerValue.TIMESTAMP, user: props.user})
+      setAlert(res.data.msg)
+      setLoading(false)
+      setOpen(false)
+    })
   }
 
   const renderModal = () => {
     if(selected) return(
-      <Segment basic>
+      <Segment basic loading={loading}>
         <Label color="green" content={"No. " + selected[1]} size="big" style={styles.labelSpacer} />
         <Label icon="user" color="teal" content={selected[4]} size="big" style={styles.labelSpacer}/>
         <br />
@@ -85,13 +99,13 @@ const OrderList = (props) => {
 
     return pedidos.map(p => {
       let prodIndex = 6
-      const disabled = p[3] === "Pedido Entregue"
+      const delivered = p[3] === "Pedido Entregue" || statuses.includes(p[1].toString())
       return (
         <Table.Row
           key={p[4]+p[5]}
-          onClick={() => !disabled && openConfirm(p)}
-          disabled={disabled}
-          warning={disabled}
+          onClick={() => !delivered && openConfirm(p)}
+          disabled={delivered}
+          negative={delivered}
         >
           <Table.Cell>
             <Label icon="hashtag" ribbon color={periodosColor[p[2]]} content={p[1]}/>
@@ -99,7 +113,12 @@ const OrderList = (props) => {
           <Table.Cell><b>{p[4]}</b> <Label icon="phone" content={p[5]} size="tiny" /></Table.Cell>
           <Table.Cell>  </Table.Cell>
           <Table.Cell>
-            <Label color={periodosColor[p[2]]} content={periodos[p[2]]} size="tiny" icon="clock"/>
+            <Label
+              color={periodosColor[p[2]]}
+              content={periodos[p[2]]}
+              size="tiny"
+              icon="clock"
+            />
             <List bulleted>
             {estoque.map((item,index) => {
               return(
@@ -129,7 +148,7 @@ const OrderList = (props) => {
         </Head>
         <Header as='h1' className="page-header">Terminal de entrega</Header>
         <Segment className="marged" inverted color="black" disabled={loading} loading={loading}>
-
+        {statuses}
         </Segment>
         <Segment className="marged" loading={loading} disabled={!online} inverted>
           <Label
@@ -137,6 +156,7 @@ const OrderList = (props) => {
             content={online ? "Você está online" : "Você está offline, tente atualizar a página ou aguarde a reconexão"}
             icon={online?"linkify":"unlink"}
           />
+          <Message hidden={alert === ""} header={alert} success />
           <Table size="small" stackable selectable>
             <Table.Body>
               {renderPedidos(props.config)}
@@ -149,12 +169,15 @@ const OrderList = (props) => {
           confirmButton={() => <Button
             color="green"
             content="Entregar Pedido"
-
+            disabled={loading}
+            onClick={deliverOrder}
           />}
-          cancelButton="Cancelar"
+          cancelButton={() => <Button
+            content="Cancelar"
+            disabled={loading}
+            onClick={closeConfirm}
+          />}
           content={renderModal}
-          onCancel={closeConfirm}
-          onConfirm={deliverOrder}
         />
       </Layout>
     )
