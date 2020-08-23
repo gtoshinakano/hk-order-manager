@@ -21,7 +21,7 @@ export default function Login(props) {
 
   const doLogin = (e) => {
     setLoading(true)
-    setMessage({type: "info", msg: "Enviando dados.."})
+    setMessage({type: "info", msg: "Realizando login.."})
     axios.get(get_url, {
       params: {
         type:'login',

@@ -17,7 +17,6 @@ export default function MyApp({ Component, pageProps }) {
     }
   },[user])
 
-  console.log(handshake);
   if(user === "") return <Component {...pageProps} setUser={setUser} setHash={setHash} setHandshake={setHandshake} />
   return <Component {...pageProps} user={user} hash={hash} config={handshake} />
 ß
