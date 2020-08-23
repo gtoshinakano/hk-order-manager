@@ -6,13 +6,21 @@ import firebase from '../../utils/firebase'
 
 const OrderList = (props) => {
 
-  const [loading, setLoading] = React.useState(false)
+  const [loading, setLoading] = React.useState(true)
   const [statuses, setStatuses] = React.useState([])
+  const [online, setOnline] = React.useState(false)
 
   React.useEffect(() => {
-    firebase.database().ref('delivery_status').on('value', (snap) => {
-      console.log(snap);
-    })
+    if(props.config)
+      firebase.database().ref('delivery_status').on('value', (snap) => {
+        setLoading(false)
+        console.log(snap.val());
+      })
+  }, [props.config])
+
+  React.useEffect(() => {
+    if(props.config)
+    firebase.database().ref(".info/connected").on("value", sn => setOnline(sn.val()));
   })
 
   console.log(props.config);
@@ -33,17 +41,16 @@ const OrderList = (props) => {
           <Label color={periodosColor[p[2]]} content={periodos[p[2]]} size="tiny" icon="clock"/>
           <List bulleted>
           {estoque.map((item,index) => {
-            prodIndex+index
             return(
-              <List.Item key={item[0]+index}><small>{p[prodIndex] || 0} x {item[0]}</small></List.Item>
+              <List.Item key={item[0]+index}><small>{p[prodIndex+index]>0 ? p[prodIndex+index] : 0} x {item[0]}</small></List.Item>
             )
           })}
           </List>
         </Table.Cell>
-        <Table.Cell><b>Total: {p[prodIndex + estoque.length + 2].toFixed(2)}</b></Table.Cell>
+        <Table.Cell><b>Total: R$ {p[prodIndex + estoque.length + 2].toFixed(2)}</b></Table.Cell>
         <Table.Cell textAlign="center">
           <Label
-
+            content={p[3]}
           />
         </Table.Cell>
       </Table.Row>)
@@ -62,7 +69,12 @@ const OrderList = (props) => {
         <Segment className="marged" inverted color="black" disabled={loading} loading={loading}>
 
         </Segment>
-        <Segment className="marged">
+        <Segment className="marged" loading={loading}>
+          <Label
+            color={online?"green":"red"}
+            content={online ? "Você está online" : "Você está offline, tente atualizar a página ou aguarde a reconexão"}
+            icon={online?"linkify":"unlink"}
+          />
           <Table size="small" stackable>
             <Table.Body>
               {renderPedidos(props.config)}
