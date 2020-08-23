@@ -46,10 +46,13 @@ const OrderList = (props) => {
         terminal: props.user
       },
     }).then(res => {
-      firebase.database().ref('delivery_status/'+selected[1]).set({time: firebase.database.ServerValue.TIMESTAMP, user: props.user})
-      setAlert(res.data.msg)
-      setLoading(false)
-      setOpen(false)
+      firebase.database().ref('delivery_status/'+selected[1])
+      .set({time: firebase.database.ServerValue.TIMESTAMP, user: props.user})
+      .then(() => {
+        setAlert(res.data.msg)
+        setLoading(false)
+        setOpen(false)
+      })
     })
   }
 
@@ -119,10 +122,10 @@ const OrderList = (props) => {
               size="tiny"
               icon="clock"
             />
-            <List bulleted>
+            <List bulleted size="large">
             {estoque.map((item,index) => {
               return(
-                <List.Item key={item[0]+index}><small>{p[prodIndex+index]>0 ? p[prodIndex+index] : 0} x {item[0]}</small></List.Item>
+                <List.Item key={item[0]+index}>{p[prodIndex+index]>0 ? p[prodIndex+index] : 0} x {item[0]}</List.Item>
               )
             })}
             </List>
