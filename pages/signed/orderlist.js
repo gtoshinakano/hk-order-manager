@@ -133,7 +133,11 @@ const OrderList = (props) => {
           <Table.Cell><b>Total: R$ {p[prodIndex + estoque.length + 2].toFixed(2)}</b></Table.Cell>
           <Table.Cell textAlign="center">
             <Label
-              content={p[3]}
+              content={delivered ? "Pedido entregue" : p[3]}
+              size="big"
+              basic={delivered}
+              icon={delivered ? "calendar check outline" : "hourglass half"}
+              color={delivered ? "green" : 'teal'}
             />
           </Table.Cell>
         </Table.Row>
