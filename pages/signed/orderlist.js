@@ -1,7 +1,7 @@
 import React from 'react'
 import Layout from '../../components/logged.layout'
 import Head from 'next/head'
-import {Header, Segment, Table, Label, List, Confirm, Button, Message} from 'semantic-ui-react'
+import {Header, Segment, Table, Label, List, Confirm, Button, Message, Modal} from 'semantic-ui-react'
 import firebase from '../../utils/firebase'
 import axios from 'axios'
 
@@ -18,7 +18,9 @@ const OrderList = (props) => {
     if(props.config)
       firebase.database().ref('delivery_status').on('value', (snap) => {
         setLoading(false)
-        if(snap.val()) setStatuses(Object.keys(snap.val()));
+        if(snap.val()) {
+          setStatuses(snap.val());
+        }
       })
   }, [])
 
@@ -99,10 +101,11 @@ const OrderList = (props) => {
   const renderPedidos = (config) => {
     const pedidos = config.pedidos || []
     const estoque = config.estoque || []
+    const statusKeys = Object.keys(statuses)
 
     return pedidos.map(p => {
       let prodIndex = 6
-      const delivered = p[3] === "Pedido Entregue" || statuses.includes(p[1].toString())
+      const delivered = p[3] === "Pedido Entregue" || statusKeys.includes(p[1].toString())
       return (
         <Table.Row
           key={p[4]+p[5]}
@@ -114,7 +117,8 @@ const OrderList = (props) => {
             <Label icon="hashtag" ribbon color={periodosColor[p[2]]} content={p[1]}/>
           </Table.Cell>
           <Table.Cell><b>{p[4]}</b> <Label icon="phone" content={p[5]} size="tiny" /></Table.Cell>
-          <Table.Cell>  </Table.Cell>
+          <Table.Cell>
+          </Table.Cell>
           <Table.Cell>
             <Label
               color={periodosColor[p[2]]}
@@ -133,7 +137,7 @@ const OrderList = (props) => {
           <Table.Cell><b>Total: R$ {p[prodIndex + estoque.length + 2].toFixed(2)}</b></Table.Cell>
           <Table.Cell textAlign="center">
             <Label
-              content={delivered ? "Pedido entregue" : p[3]}
+              content={statuses[p[1].toString()] ? "Pedido entregue por " + statuses[p[1].toString()].user : delivered ? "Pedido Entregue" : p[3]}
               size="big"
               basic={delivered}
               icon={delivered ? "calendar check outline" : "hourglass half"}
@@ -155,7 +159,7 @@ const OrderList = (props) => {
         </Head>
         <Header as='h1' className="page-header">Terminal de entrega</Header>
         <Segment className="marged" inverted color="black" disabled={loading} loading={loading}>
-        {statuses}
+
         </Segment>
         <Segment className="marged" loading={loading} disabled={!online} inverted>
           <Label
@@ -164,6 +168,12 @@ const OrderList = (props) => {
             icon={online?"linkify":"unlink"}
           />
           <Message hidden={alert === ""} header={alert} success />
+          <Modal
+            open={alert !== ""}
+            header='Mensagem do servidor'
+            content={alert}
+            onClose={() => setAlert("")}
+          />
           <Table size="small" stackable selectable>
             <Table.Body>
               {renderPedidos(props.config)}
