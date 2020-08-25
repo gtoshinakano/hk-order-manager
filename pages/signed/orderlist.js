@@ -2,6 +2,7 @@ import React from 'react'
 import Layout from '../../components/logged.layout'
 import Head from 'next/head'
 import {Header, Segment, Table, Label, List, Confirm, Button, Message, Modal} from 'semantic-ui-react'
+import moment from "moment"
 import firebase from '../../utils/firebase'
 import axios from 'axios'
 
@@ -40,16 +41,22 @@ const OrderList = (props) => {
   const get_url = process.env.SHEET_GET
   const deliverOrder = () => {
     setLoading(true)
+    const time = moment().format("YYYY/MM/DD HH:mm:ss")
     axios.get(get_url, {
       params:{
         type:"deliver-order",
         token: props.hash,
         pedido: selected[1],
+        time: time,
         terminal: props.user
       },
     }).then(res => {
       firebase.database().ref('delivery_status/'+selected[1])
-      .set({time: firebase.database.ServerValue.TIMESTAMP, user: props.user})
+      .set({
+        svtime: firebase.database.ServerValue.TIMESTAMP,
+        user: props.user,
+        time: time
+      })
       .then(() => {
         setAlert(res.data.msg)
         setLoading(false)
@@ -126,6 +133,7 @@ const OrderList = (props) => {
               size="tiny"
               icon="clock"
             />
+            {delivered && <Label content={statuses[p[1].toString()] && "Entregue às " + statuses[p[1].toString()].time} size="tiny" basic/>}
             <List bulleted size="large">
             {estoque.map((item,index) => {
               return(
@@ -138,7 +146,7 @@ const OrderList = (props) => {
           <Table.Cell textAlign="center">
             <Label
               content={statuses[p[1].toString()] ? "Pedido entregue por " + statuses[p[1].toString()].user : delivered ? "Pedido Entregue" : p[3]}
-              size="big"
+              size="large"
               basic={delivered}
               icon={delivered ? "calendar check outline" : "hourglass half"}
               color={delivered ? "green" : 'teal'}
