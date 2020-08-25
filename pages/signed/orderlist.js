@@ -5,6 +5,7 @@ import {Header, Segment, Table, Label, List, Confirm, Button, Message, Modal} fr
 import moment from "moment"
 import firebase from '../../utils/firebase'
 import axios from 'axios'
+import SearchOrder from '../../components/search.order'
 
 const OrderList = (props) => {
 
@@ -28,7 +29,7 @@ const OrderList = (props) => {
   React.useEffect(() => {
     if(props.config)
       firebase.database().ref(".info/connected").on("value", sn => setOnline(sn.val()));
-  },[props.config])
+  },[])
 
   const openConfirm = (selected) => {
     if(online){
@@ -167,7 +168,7 @@ const OrderList = (props) => {
         </Head>
         <Header as='h1' className="page-header">Terminal de entrega</Header>
         <Segment className="marged" inverted color="black" disabled={loading} loading={loading}>
-
+          <SearchOrder list={props.config.pedidos} delivered={Object.keys(statuses)} />
         </Segment>
         <Segment className="marged" loading={loading} disabled={!online} inverted>
           <Label
