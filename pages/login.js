@@ -29,31 +29,17 @@ export default function Login(props) {
       }
     })
     .then(res => {
+      console.log(res.data.success);
       if(res.data.success) {
         setMessage({type:"success", msg: "Login efetuado com sucesso! Preparando o sistema.."})
-        axios.get(get_url, {
-          params:{
-            type:"handshake",
-            token: res.data.token
-          },
-        }).then(hs => {
-          setLoading(false)
-          props.setUser(res.data.success[0])
-          props.setHash(res.data.token)
-          props.setHandshake(hs.data)
-          router.push('/signed/orderlist') //TODO HANDLE ERROR
-        }).catch(err => {
-          setLoading(false)
-          setMessage({type:"error", msg: JSON.stringify(err)})
-        })
-
+        props.setUser(res.data.success[0])
+        props.setHash(res.data.token)
+        props.setHandshake(res.data.handshake)
+        router.push('/signed/orderlist') //TODO HANDLE ERROR
       }else{
         setMessage({type:"error", msg:"ERRO: Usuário e/ou senha incorretos"})
         setLoading(false)
       }
-    }).catch(err => {
-      setLoading(false)
-      setMessage({type:"error", msg: JSON.stringify(err)})
     })
   }
 
