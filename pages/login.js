@@ -51,6 +51,9 @@ export default function Login(props) {
         setMessage({type:"error", msg:"ERRO: Usuário e/ou senha incorretos"})
         setLoading(false)
       }
+    }).catch(err => {
+      setLoading(false)
+      setMessage({type:"error", msg: JSON.stringify(err)})
     })
   }
 
