@@ -9,7 +9,6 @@ const SearchOrder = (props) => {
   const [results, setResults] = React.useState([])
 
   React.useEffect(() => {
-    console.log("effecting", props.list, props.delivered);
     if(props.delivered.length > 0){
       setList(props.list.filter(listFilter).map(mapList))
     }else{
@@ -29,7 +28,8 @@ const SearchOrder = (props) => {
       title: i[1] + " " + i[4],
       description: "Tel " + i[5],
       price: "Período " + i[2],
-      find: i[1] + " " + i[4] + " " + i[5]
+      find: i[1] + " " + i[4] + " " + i[5],
+      raw: i
     }
   }
 
@@ -44,9 +44,7 @@ const SearchOrder = (props) => {
   return (
     <Search
       loading={loading}
-      onResultSelect={(e, data) =>
-        dispatch({ type: 'UPDATE_SELECTION', selection: data.result.title })
-      }
+      onResultSelect={(e, data) => props.onSelect(data.result.raw)}
       onSearchChange={handleSearchChange}
       results={results}
       value={value}

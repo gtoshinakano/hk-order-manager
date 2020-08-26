@@ -168,7 +168,11 @@ const OrderList = (props) => {
         </Head>
         <Header as='h1' className="page-header">Terminal de entrega</Header>
         <Segment className="marged" inverted color="black" disabled={loading} loading={loading}>
-          <SearchOrder list={props.config.pedidos} delivered={Object.keys(statuses)} />
+          <SearchOrder
+            list={props.config.pedidos}
+            delivered={Object.keys(statuses)}
+            onSelect={openConfirm}
+          />
         </Segment>
         <Segment className="marged" loading={loading} disabled={!online} inverted>
           <Label
