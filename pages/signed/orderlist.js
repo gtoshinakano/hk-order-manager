@@ -118,7 +118,6 @@ const OrderList = (props) => {
         <Table.Row
           key={p[4]+p[5]}
           onClick={() => !delivered && openConfirm(p)}
-          disabled={delivered}
           negative={delivered}
         >
           <Table.Cell>
