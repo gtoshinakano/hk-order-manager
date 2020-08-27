@@ -52,6 +52,7 @@ const OrderList = (props) => {
         terminal: props.user
       },
     }).then(res => {
+      setOpen(false)
       firebase.database().ref('delivery_status/'+selected[1])
       .set({
         svtime: firebase.database.ServerValue.TIMESTAMP,
@@ -61,7 +62,6 @@ const OrderList = (props) => {
       .then(() => {
         setAlert(res.data.msg)
         setLoading(false)
-        setOpen(false)
       })
     })
   }
@@ -116,7 +116,7 @@ const OrderList = (props) => {
       const delivered = p[3] === "Pedido Entregue" || statusKeys.includes(p[1].toString())
       return (
         <Table.Row
-          key={p[4]+p[5]}
+          key={p[4]+p[1]}
           onClick={() => !delivered && openConfirm(p)}
           negative={delivered}
         >
