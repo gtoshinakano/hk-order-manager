@@ -3,7 +3,7 @@ import styles from './logged.layout.module.css'
 import {Grid, Sidebar, Menu, Checkbox, Segment, Icon, Button, Ref, Sticky} from 'semantic-ui-react'
 import { useRouter } from 'next/router'
 
-function Layout({children}) {
+function Layout({children, props}) {
   const [visible, setVisible] = React.useState(false)
   const divRef = React.useRef()
   const router = useRouter()
@@ -15,7 +15,6 @@ function Layout({children}) {
     {/*<Sidebar.Pushable style={{transform:"none"}}>*/}
       <Sidebar
         as={Menu}
-        animation='scale down'
         icon='labeled'
         inverted
         onHide={() => setVisible(false)}

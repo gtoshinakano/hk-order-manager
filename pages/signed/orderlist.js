@@ -13,6 +13,7 @@ const OrderList = (props) => {
   const [open, setOpen] = React.useState(false)
   const [selected, setSelected] = React.useState()
   const [alert, setAlert] = React.useState("")
+  const isAdmin = ["Toshi", "Yukio", "Oston"].includes(props.user)
 
   React.useEffect(() => {
     if(props.config)
@@ -110,7 +111,6 @@ const OrderList = (props) => {
         <Table.Row
           key={p[4]+p[5]}
           onClick={() => !delivered && openConfirm(p)}
-          disabled={delivered}
           negative={delivered}
         >
           <Table.Cell>
@@ -143,15 +143,45 @@ const OrderList = (props) => {
               icon={delivered ? "calendar check outline" : "hourglass half"}
               color={delivered ? "green" : 'teal'}
             />
+            {delivered && isAdmin && <Button
+              content="Retornar pedido"
+              style={{marginTop: 7}}
+              color="red"
+              onClick={() => retornarPedido(p[1])}
+            />}
           </Table.Cell>
         </Table.Row>
       )
     })
   }
 
+  const retornarPedido = (pedido) => {
+    if(isAdmin){
+      console.log(pedido);
+      setLoading(true)
+      axios.get(get_url, {
+        params:{
+          type:"return-order",
+          token: props.hash,
+          pedido: pedido,
+          terminal: props.user
+        },
+      }).then(res => {
+        firebase.database().ref('delivery_status/'+pedido)
+        .set({})
+        .then(() => {
+          setAlert(res.data.msg)
+          setLoading(false)
+          setOpen(false)
+        })
+      })
+    }
+  }
+
   if(!props.user) return <p>Redirecionando...</p>
   else{
     const config = props.config || {}
+
     return (
       <Layout>
         <Head>
