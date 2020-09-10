@@ -23,7 +23,7 @@ const OrderList = (props) => {
         setLoading(false)
         if(snap.val()) {
           setStatuses(snap.val());
-        }
+        }else setStatuses([]);
       })
   }, [])
 
@@ -39,8 +39,11 @@ const OrderList = (props) => {
       setOpen(true)
     }
   }
+
   const closeConfirm = () => setOpen(false)
+
   const get_url = process.env.SHEET_GET
+
   const deliverOrder = () => {
     setLoading(true)
     const time = moment().format("YYYY/MM/DD HH:mm:ss")
@@ -65,6 +68,30 @@ const OrderList = (props) => {
         setLoading(false)
       })
     })
+  }
+
+  const retornarPedido = (pedido) => {
+    if(isAdmin){
+      const time = moment().format("YYYY/MM/DD HH:mm:ss")
+      setLoading(true)
+      axios.get(get_url, {
+        params:{
+          type:"return-order",
+          token: props.hash,
+          pedido: pedido,
+          terminal: props.user,
+          time: time,
+        },
+      }).then(res => {
+        firebase.database().ref('delivery_status/'+pedido)
+        .set({})
+        .then(() => {
+          setAlert(res.data.msg)
+          setLoading(false)
+          setOpen(false)
+        })
+      })
+    }
   }
 
   const renderModal = () => {
@@ -114,7 +141,7 @@ const OrderList = (props) => {
 
     return pedidos.map(p => {
       let prodIndex = 6
-      const delivered = p[3] === "Pedido Entregue" || statusKeys.includes(p[1].toString())
+      const delivered = statusKeys.includes(p[1].toString())
       return (
         <Table.Row
           key={p[4]+p[1]}
@@ -162,29 +189,6 @@ const OrderList = (props) => {
         </Table.Row>
       )
     })
-  }
-
-  const retornarPedido = (pedido) => {
-    if(isAdmin){
-      console.log(pedido);
-      setLoading(true)
-      axios.get(get_url, {
-        params:{
-          type:"return-order",
-          token: props.hash,
-          pedido: pedido,
-          terminal: props.user
-        },
-      }).then(res => {
-        firebase.database().ref('delivery_status/'+pedido)
-        .set({})
-        .then(() => {
-          setAlert(res.data.msg)
-          setLoading(false)
-          setOpen(false)
-        })
-      })
-    }
   }
 
   if(!props.user) return <p>Redirecionando...</p>
