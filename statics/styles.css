@@ -5,3 +5,8 @@ h1.ui.header.page-header{
 .ui.segment.marged{
   margin:10px;
 }
+
+.ui.table tr.negative td{
+  background-color: #f7f7f7;
+  color:#aaa
+}
