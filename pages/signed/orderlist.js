@@ -100,16 +100,12 @@ const OrderList = (props) => {
         <Label color="green" content={"No. " + selected[1]} size="big" style={styles.labelSpacer} />
         <Label icon="user" color="teal" content={selected[4]} size="big" style={styles.labelSpacer}/>
         <br />
-        {props.config.estoque.map((item,index) => {
-          return(
-            <div key={item[0]+index+selected[4]}>
-              <Label size="big" style={styles.labelSpacer}>
-                {selected[6+index]>0 ? selected[6+index] : 0} x {item[0]}
-              </Label>
-              <br />
-            </div>
-          )
-        })}
+        <Label size="big" style={styles.labelSpacer}>
+          {selected[6]>0 ? selected[6] : 0} x Nishin
+        </Label><br />
+        <Label size="big" style={styles.labelSpacer}>
+          {selected[7]>0 ? selected[7] : 0} x Ika
+        </Label><br />
         <Label
           content={"Total R$ " + selected[10].toFixed(2)}
           size="big"
