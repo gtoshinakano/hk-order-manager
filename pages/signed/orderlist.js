@@ -163,11 +163,8 @@ const OrderList = (props) => {
             />
             {delivered && <Label content={statuses[p[1].toString()] && "Entregue às " + statuses[p[1].toString()].time} size="tiny" basic/>}
             <List bulleted size="large">
-            {estoque.map((item,index) => {
-              return(
-                <List.Item key={item[0]+index}>{p[prodIndex+index]>0 ? p[prodIndex+index] : 0} x {item[0]}</List.Item>
-              )
-            })}
+              <List.Item >{p[6]>0 ? p[6] : 0} x Nishin</List.Item>
+              <List.Item >{p[7]>0 ? p[7] : 0} x Ika</List.Item>
             </List>
           </Table.Cell>
           <Table.Cell><b>Total: R$ {p[prodIndex + estoque.length + 2].toFixed(2)}</b></Table.Cell>
