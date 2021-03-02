@@ -29,7 +29,7 @@ export default function Login(props) {
       }
     })
     .then(res => {
-      console.log(res.data.success);
+      console.log(res);
       if(res.data.success) {
         setMessage({type:"success", msg: "Login efetuado com sucesso! Preparando o sistema.."})
         props.setUser(res.data.success[0])
