@@ -111,6 +111,13 @@ const OrderList = (props) => {
           )
         })}
         <Label
+          content={selected[6] + selected[7] * 2} //TODO RESOLVE HERE 
+          size="massive"
+          style={{float: "right"}}
+          color="pink"
+          icon="shopping bag"
+        /><br />
+        <Label
           content={"Total R$ " + selected[10].toFixed(2)}
           size="big"
           style={styles.labelSpacer}
@@ -250,15 +257,15 @@ const OrderList = (props) => {
 }
 
 const periodosColor = {
-  1: "blue",
-  2: "purple",
-  3: "pink"
+  "P1": "blue",
+  "P2": "purple",
+  "P3": "pink"
 }
 
 const periodos = {
-  1: "10:30~11:30",
-  2: "11:30~12:30",
-  3: "12:30~13:30",
+  "P1": "10:30~11:30",
+  "P2": "11:30~12:30",
+  "P3": "12:30~13:30",
 }
 
 const statusColors = {
