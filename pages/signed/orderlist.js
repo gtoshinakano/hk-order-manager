@@ -15,7 +15,7 @@ const OrderList = (props) => {
   const [open, setOpen] = React.useState(false)
   const [selected, setSelected] = React.useState()
   const [alert, setAlert] = React.useState("")
-  const isAdmin = ["Toshi", "Yukio", "Oston"].includes(props.user)
+  const isAdmin = ["Admin","Toshi", "Yukio", "Oston"].includes(props.user)
 
   React.useEffect(() => {
     if(props.config)
